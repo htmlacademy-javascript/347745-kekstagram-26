@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Арсений Липин](https://up.htmlacademy.ru/javascript/26/user/347745).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Григорьев](https://htmlacademy.ru/profile/fuckhtml).
 
 ---
 
