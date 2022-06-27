@@ -1,5 +1,5 @@
-import {creatArrayUser} './generator';
+import {creatArrayUser} from './generator';
 
-const arrayUser = creatArrayUser();
+creatArrayUser();
 
 
