@@ -31,6 +31,4 @@ function checkStringLength(string, length) {
   return string.length <= length;
 }
 
-checkStringLength('Тестируемый текст', 100);
-
 export {getRandomPositiveInteger, getNoRepeatRandomNumbers, checkStringLength};

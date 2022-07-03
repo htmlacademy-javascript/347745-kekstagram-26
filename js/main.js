@@ -1,5 +1,4 @@
-import {creatArrayUser} from './generator';
+import {addsPicturesOfUsers} from './preview.js';
+import './generator.js';
 
-creatArrayUser();
-
-
+addsPicturesOfUsers();
