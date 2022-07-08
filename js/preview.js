@@ -18,4 +18,4 @@ pictureOfOthersUsers .forEach(({url, comments, likes}) => {
 const addsPicturesOfUsers = () =>
   pictureListUsers.append(pictureFragment);
 
-export {addsPicturesOfUsers};
+export {addsPicturesOfUsers, pictureOfOthersUsers};
