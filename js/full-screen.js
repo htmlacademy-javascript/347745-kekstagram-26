@@ -7,10 +7,10 @@ const commentsItemElements = commentsListElements.querySelector('.social__commen
 const commentsFragment = document.createDocumentFragment();
 
 // Добавляет коментарии
-const addComments = () => {
+const addComments = (comments) => {
   commentsListElements.innerHTML = '';
 
-  pictureOfOthersUsers.comments.map((comment) => {
+  comments.map((comment) => {
     const { avatar, name, message } = comment;
     const commentsItemClone = commentsItemElements.cloneNode(true);
     commentsItemClone.querySelector('.social__picture').src = avatar;
