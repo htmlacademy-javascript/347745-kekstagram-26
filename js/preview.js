@@ -10,7 +10,7 @@ const pictureFragment = document.createDocumentFragment();
 pictureOfOthersUsers .forEach(({url, comments, likes}) => {
   const pictureElement = pictureTemplate.cloneNode(true);
   pictureElement.querySelector('.picture__img').src = url;
-  pictureElement.querySelector('.picture__comments').textContent = comments.lenght;
+  pictureElement.querySelector('.picture__comments').textContent = comments.length;
   pictureElement.querySelector('.picture__likes').textContent = likes;
   pictureFragment.append(pictureElement);
 });
