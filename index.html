@@ -17,7 +17,7 @@
         <form
           class="img-filters__form"
           action="index.html"
-          method="get"
+          method="post"
           autocomplete="off"
         >
           <button
@@ -56,6 +56,7 @@
               class="img-upload__form"
               id="upload-select-image"
               method="post"
+              action="https://26.javascript.pages.academy/kekstagram"
               enctype="multipart/form-data"
               autocomplete="off"
             >
@@ -238,6 +239,7 @@
                     <div class="img-upload__field-wrapper">
                       <input
                         class="text__hashtags"
+                        type="text"
                         name="hashtags"
                         placeholder="#ХэшТег"
                       />
@@ -247,6 +249,7 @@
                         class="text__description"
                         name="description"
                         placeholder="Ваш комментарий..."
+                        maxlength="140"
                       ></textarea>
                     </div>
                   </fieldset>
