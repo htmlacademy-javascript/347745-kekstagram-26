@@ -2,7 +2,7 @@ import { pictureOfOthersUsers } from './preview.js';
 
 const sectionBigPictureElements = document.querySelector('.big-picture');
 const commentsListElements = sectionBigPictureElements.querySelector('.social__comments');
-const cancelButtonElement = document.querySelector('.big-picturecancel');
+const cancelButtonElement = document.querySelector('.big-picture__cancel');
 const commentsItemElements = commentsListElements.querySelector('.social__comment');
 const commentsFragment = document.createDocumentFragment();
 
@@ -70,7 +70,7 @@ const displayBigPicture = (picture) => {
 
   commentsCountHidden();
 
-  sectionBigPictureElements.querySelector('.big-pictureimg img').src = url;
+  sectionBigPictureElements.querySelector('.big-picture img').src = url;
   sectionBigPictureElements.querySelector('.likes-count').textContent = likes;
   sectionBigPictureElements.querySelector('.comments-count').textContent = comments.length;
   sectionBigPictureElements.querySelector('.social__caption').textContent = description;
