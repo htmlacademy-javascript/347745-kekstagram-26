@@ -31,7 +31,7 @@ function createUsersPhotos() {
     description: getRandomArrayElement(descriptionsPhoto),
     likes: getRandomPositiveInteger(15, 200),
     comments: Array.from(
-      { length: getRandomPositiveInteger(1, 3) },
+      { length: getRandomPositiveInteger(5, 20) },
       createCommentsUsers
     ),
   };
