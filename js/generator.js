@@ -1,10 +1,13 @@
 import {
   getRandomPositiveInteger,
   getNoRepeatRandomNumbers,
-  descriptionsPhoto,
-} from './utils';
-import { messageUser, nameUser } from './data';
+  checkStringLength,
+} from './utils.js';
+import { descriptionsPhoto, messageUser, nameUser } from './data.js';
+
 const objectCount = 25;
+
+checkStringLength('Тестируемый текст', 100);
 
 // Создание случайного элемента массива
 const getRandomArrayElement = (element) =>
