@@ -54,9 +54,9 @@ const commentsCountHidden = () => {
 };
 
 // Открывает модальное окно
-const removeHidden = () => {
-  sectionBigPictureElements.classList.remove('hidden');
-};
+// const removeHidden = () => {
+// sectionBigPictureElements.classList.remove('hidden');
+// };
 
 const currentPicture = pictureOfOthersUsers[0];
 
@@ -75,7 +75,7 @@ const displayBigPicture = (picture) => {
   sectionBigPictureElements.querySelector('.comments-count').textContent = comments.length;
   sectionBigPictureElements.querySelector('.social__caption').textContent = description;
 
-  removeHidden();
+  // removeHidden();
   document.body.classList.add('modal-open');
   addComments(comments);
 };
