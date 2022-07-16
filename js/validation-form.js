@@ -3,6 +3,7 @@ const imageOverlayElement = document.querySelector('.img-upload__overlay');
 const uploadCancelElement = document.querySelector('#upload-cancel');
 const imgUploadFormElement = document.querySelector('.img-upload__form');
 const textHashtags = imgUploadFormElement.querySelector('.text__hashtags');
+const textDescription = imgUploadFormElement.querySelector('.text__description');
 
 const openModal = () => {
   imageOverlayElement.classList.remove('hidden');
@@ -57,7 +58,40 @@ const validateLength = (value) => value.trim().split(' ').every((element) => ele
 
 pristine.addValidator(textHashtags, validateLength, 'Название должно быть не меньше 2 и не больше 20 символов');
 
-const hashtagsCount = (value) => value.trim().split(' ').every((element) => element('#') > 5);
+// Не получается!!!
 
-pristine.addValidator(textHashtags, hashtagsCount, 'Название не должно содержать больше пяти "#"');
+// const hashtagsCount = (value) => value.length[5] === '#';
 
+// pristine.addValidator(textHashtags, hashtagsCount, 'Название не должно содержать больше пяти "#"');
+
+const validateSymbol = (value) => {
+  const re = /^#[A-Za-zА-Яа-яЁё0-9]+$/;
+  return value.trim().split(' ').every((element) => element.match(re));
+};
+
+pristine.addValidator(textHashtags, validateSymbol, 'Название не должно содержать спец символы');
+
+const validateRepeat = (value) => new Set(value.split(' ')).size === value.split(' ').length;
+
+pristine.addValidator(textHashtags, validateRepeat, 'Хэш-теги не должны повторяться');
+
+imgUploadFormElement.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  if (pristine.validate()) {
+    imgUploadFormElement.submit();
+  }
+});
+
+textHashtags.addEventListener('keydown', (evt) => {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+});
+
+textDescription.addEventListener('keydown', (evt) => {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+});
