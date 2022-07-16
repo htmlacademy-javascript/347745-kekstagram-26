@@ -23,7 +23,6 @@ const closeModal = () => {
 const onUploadButtonClickClose = (evt) => {
   evt.preventDefault();
   closeModal();
-
 };
 
 const onModalEscapeKeydown = (evt) => {
