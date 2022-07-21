@@ -16,10 +16,18 @@ const addComments = (comments) => {
     commentsItemClone.querySelector('.social__picture').src = avatar;
     commentsItemClone.querySelector('.social__picture').alt = name;
     commentsItemClone.querySelector('.social__text').textContent = message;
+
     commentsFragment.append(commentsItemClone);
   });
 
   commentsListElements.append(commentsFragment);
+
+  const rr = commentsListElements.children;
+  const ff = Array.from(rr);
+  const aa = ff.slice(0, 5);
+  commentsListElements.replaceChildren(aa);
+  // console.log(aa);
+
 };
 
 const hidePigPicture = () => {
@@ -47,18 +55,7 @@ const onDocumentEscapeKeydown = (evt) => {
   }
 };
 
-// Скрывает счетчик комментариев
-const commentsCountHidden = () => {
-  const commentsCount = document.querySelector('.social__comment-count, .comments-count');
-  commentsCount.classList.add('hidden');
-};
-
-// Открывает модальное окно
-// const removeHidden = () => {
-// sectionBigPictureElements.classList.remove('hidden');
-// };
-
-const currentPicture = pictureOfOthersUsers[0];
+// const currentPicture = pictureOfOthersUsers[2];
 
 const displayBigPicture = (picture) => {
   const {
@@ -68,19 +65,19 @@ const displayBigPicture = (picture) => {
     description,
   } = picture;
 
-  commentsCountHidden();
-
   sectionBigPictureElements.querySelector('.big-picture img').src = url;
   sectionBigPictureElements.querySelector('.likes-count').textContent = likes;
   sectionBigPictureElements.querySelector('.comments-count').textContent = comments.length;
   sectionBigPictureElements.querySelector('.social__caption').textContent = description;
-
-  // removeHidden();
-  document.body.classList.add('modal-open');
   addComments(comments);
+
 };
 
-displayBigPicture (currentPicture);
+// displayBigPicture (currentPicture);
+
+//как сделать открытие фото по клику?
 
 document.addEventListener('keydown', onDocumentEscapeKeydown);
 cancelButtonElement.addEventListener('click', onCancelButtonClick);
+
+export {sectionBigPictureElements};

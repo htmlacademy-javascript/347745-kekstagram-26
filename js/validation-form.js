@@ -5,24 +5,11 @@ const imgUploadFormElement = document.querySelector('.img-upload__form');
 const textHashtags = imgUploadFormElement.querySelector('.text__hashtags');
 const textDescription = imgUploadFormElement.querySelector('.text__description');
 
-const openModal = () => {
-  imageOverlayElement.classList.remove('hidden');
-  document.querySelector('body').classList.add('modal-open');
-  uploadCancelElement.addEventListener('click', onUploadButtonClickClose);
-  document.addEventListener('click', onModalEscapeKeydown);
-};
-
 const closeModal = () => {
   imageOverlayElement.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-  uploadCancelElement.removeEventListener('click', onUploadButtonClickClose);
-  document.removeEventListener('click', onModalEscapeKeydown);
-  uploadFileElement.reset();
-};
 
-const onUploadButtonClickClose = (evt) => {
-  evt.preventDefault();
-  closeModal();
+  uploadFileElement.reset();
 };
 
 const onModalEscapeKeydown = (evt) => {
@@ -32,6 +19,20 @@ const onModalEscapeKeydown = (evt) => {
     closeModal();
     uploadCancelElement.removeEventListener('keydown', onModalEscapeKeydown);
   }
+};
+
+const onUploadButtonClickClose = (evt) => {
+  evt.preventDefault();
+  closeModal();
+  uploadCancelElement.removeEventListener('click', onUploadButtonClickClose);
+  document.removeEventListener('click', onModalEscapeKeydown);
+};
+
+const openModal = () => {
+  imageOverlayElement.classList.remove('hidden');
+  document.querySelector('body').classList.add('modal-open');
+  uploadCancelElement.addEventListener('click', onUploadButtonClickClose);
+  document.addEventListener('click', onModalEscapeKeydown);
 };
 
 const onUploadButtonClickOpen = (evt) => {
@@ -59,9 +60,9 @@ pristine.addValidator(textHashtags, validateLength, 'Название должн
 
 // Не получается!!!
 
-// const hashtagsCount = (value) => value.length[5] === '#';
+const hashtagsCount = (value) => value.length[5] === '#';
 
-// pristine.addValidator(textHashtags, hashtagsCount, 'Название не должно содержать больше пяти "#"');
+pristine.addValidator(textHashtags, hashtagsCount, 'Название не должно содержать больше пяти "#"');
 
 const validateSymbol = (value) => {
   const re = /^#[A-Za-zА-Яа-яЁё0-9]+$/;
