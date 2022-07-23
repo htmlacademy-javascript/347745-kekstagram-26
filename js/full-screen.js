@@ -1,37 +1,36 @@
-import { pictureOfOthersUsers } from './preview.js';
-
-const sectionBigPictureElements = document.querySelector('.big-picture');
-const commentsListElements = sectionBigPictureElements.querySelector('.social__comments');
+const sectionBigPictureElement = document.querySelector('.big-picture');
+const commentsListElement = sectionBigPictureElement.querySelector('.social__comments');
 const cancelButtonElement = document.querySelector('.big-picture__cancel');
-const commentsItemElements = commentsListElements.querySelector('.social__comment');
-const commentsFragment = document.createDocumentFragment();
+const commentsItemElement = commentsListElement.querySelector('.social__comment');
+const commentsFragment = [];
+const socialCommentsLoader = document.querySelector('.social__comments-loader');
 
 // Добавляет коментарии
 const addComments = (comments) => {
-  commentsListElements.innerHTML = '';
+  commentsListElement.innerHTML = '';
 
   comments.map((comment) => {
     const { avatar, name, message } = comment;
-    const commentsItemClone = commentsItemElements.cloneNode(true);
+    const commentsItemClone = commentsItemElement.cloneNode(true);
     commentsItemClone.querySelector('.social__picture').src = avatar;
     commentsItemClone.querySelector('.social__picture').alt = name;
     commentsItemClone.querySelector('.social__text').textContent = message;
 
-    commentsFragment.append(commentsItemClone);
+    commentsFragment.push(commentsItemClone);
   });
 
-  commentsListElements.append(commentsFragment);
-
-  const rr = commentsListElements.children;
-  const ff = Array.from(rr);
-  const aa = ff.slice(0, 5);
-  commentsListElements.replaceChildren(aa);
-  // console.log(aa);
-
+  commentsFragment.splice(0, 5).forEach((commentElement) => {
+    commentsListElement.append(commentElement);
+  });
+  socialCommentsLoader.addEventListener('click', () => {
+    commentsFragment.splice(0, 5).forEach((commentElement) => {
+      commentsListElement.append(commentElement);
+    });
+  });
 };
 
 const hidePigPicture = () => {
-  sectionBigPictureElements.classList.add('hidden');
+  sectionBigPictureElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
 };
 
@@ -40,22 +39,16 @@ const onCancelButtonClick = (evt) => {
   evt.preventDefault();
 
   hidePigPicture();
-
-  cancelButtonElement.removeEventListener('click', onCancelButtonClick);
 };
 
-// Добавляет и удаляет событие при нажатии Escape
+// Добавляет событие при нажатии Escape
 const onDocumentEscapeKeydown = (evt) => {
   if(evt.key === 'Escape') {
     evt.preventDefault();
 
     hidePigPicture();
-
-    document.removeEventListener('keydown', onDocumentEscapeKeydown);
   }
 };
-
-// const currentPicture = pictureOfOthersUsers[2];
 
 const displayBigPicture = (picture) => {
   const {
@@ -65,19 +58,17 @@ const displayBigPicture = (picture) => {
     description,
   } = picture;
 
-  sectionBigPictureElements.querySelector('.big-picture img').src = url;
-  sectionBigPictureElements.querySelector('.likes-count').textContent = likes;
-  sectionBigPictureElements.querySelector('.comments-count').textContent = comments.length;
-  sectionBigPictureElements.querySelector('.social__caption').textContent = description;
+  sectionBigPictureElement.querySelector('.big-picture img').src = url;
+  sectionBigPictureElement.querySelector('.likes-count').textContent = likes;
+  sectionBigPictureElement.querySelector('.comments-count').textContent = comments.length;
+  sectionBigPictureElement.querySelector('.social__caption').textContent = description;
   addComments(comments);
 
+  sectionBigPictureElement.classList.remove('hidden');
+  document.body.classList.add('modal-open');
 };
-
-// displayBigPicture (currentPicture);
-
-//как сделать открытие фото по клику?
 
 document.addEventListener('keydown', onDocumentEscapeKeydown);
 cancelButtonElement.addEventListener('click', onCancelButtonClick);
 
-export {sectionBigPictureElements};
+export {displayBigPicture};

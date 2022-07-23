@@ -1,9 +1,14 @@
+import {imageZoomReset, controlByClick} from './slider.js';
+
 const uploadFileElement = document.querySelector('#upload-file');
 const imageOverlayElement = document.querySelector('.img-upload__overlay');
 const uploadCancelElement = document.querySelector('#upload-cancel');
 const imgUploadFormElement = document.querySelector('.img-upload__form');
 const textHashtags = imgUploadFormElement.querySelector('.text__hashtags');
 const textDescription = imgUploadFormElement.querySelector('.text__description');
+
+imageZoomReset();
+controlByClick();
 
 const closeModal = () => {
   imageOverlayElement.classList.add('hidden');
@@ -58,14 +63,8 @@ const validateLength = (value) => value.trim().split(' ').every((element) => ele
 
 pristine.addValidator(textHashtags, validateLength, 'Название должно быть не меньше 2 и не больше 20 символов');
 
-// Не получается!!!
-
-const hashtagsCount = (value) => value.length[5] === '#';
-
-pristine.addValidator(textHashtags, hashtagsCount, 'Название не должно содержать больше пяти "#"');
-
 const validateSymbol = (value) => {
-  const re = /^#[A-Za-zА-Яа-яЁё0-9]+$/;
+  const re = /[A-Za-zА-Яа-яЁё0-9]+$/;
   return value.trim().split(' ').every((element) => element.match(re));
 };
 
