@@ -1,26 +1,35 @@
-import {isEscapeKey} from './utils.js';
-import {resetPhotoEffects, getStartZoomValue, addClickZoomButton} from './photos.js';
-import {sendData} from './api.js';
+import { sendData } from './api.js';
+import { resetPhotoEffects, getStartZoomValue, addClickZoomButton } from './photos.js';
+import { isEscapeKey } from './utils.js';
 
-const body = document.querySelector('body');
-const uploadFile = document.querySelector('#upload-file');
-const photoEdit = document.querySelector('.img-upload__overlay');
-const photoUploadForm = document.querySelector('.img-upload__form');
-const closeFormButton = photoEdit.querySelector('#upload-cancel');
-const textHashtags = photoUploadForm.querySelector('.text__hashtags');
-const textComment = photoUploadForm.querySelector('.text__description');
-const submitButton = document.querySelector('.img-upload__submit');
+const bodyElement = document.body;
+
+const uploadFileInputElement = document.querySelector('#upload-file');
+const photoEditOverlayElement = document.querySelector('.img-upload__overlay');
+const photoUploadFormElement = document.querySelector('.img-upload__form');
+const closeFormButtonElement = photoEditOverlayElement.querySelector('#upload-cancel');
+const textHashtagsElement = photoUploadFormElement.querySelector('.text__hashtags');
+const textCommentElement = photoUploadFormElement.querySelector('.text__description');
+const submitButtonElement = document.querySelector('.img-upload__submit');
+
+const errorMessageTamplateElement = document.querySelector('#error').content.querySelector('.error');
+const errorMessageElement = errorMessageTamplateElement.cloneNode(true);
+const errorButtonElement = errorMessageElement.querySelector('.error__button');
+
+const successMessageTamplateElement = document.querySelector('#success').content.querySelector('.success');
+const successMessageElement = successMessageTamplateElement.cloneNode(true);
+const successButtonElement = successMessageElement.querySelector('.success__button');
 
 const MAX_HASHTAGS_AMOUNT = 5;
-const CORRECT_HASHTAG_MESSAGE = 'Не корректный хэштег';
-const ORIGINAL_HASHTAG_MESSAGE = 'Хэштеги не должны повторяться';
-const AMOUNT_HASHTAG_MESSAGE = 'Можно добавить не более пяти хэштегов';
+const CORRECT_HASHTAG_MESSAGE = 'Invalid hashtag';
+const ORIGINAL_HASHTAG_MESSAGE = 'All hashtags should be unique';
+const AMOUNT_HASHTAG_MESSAGE = 'Not more than 5 hashtags is allowed';
 
-const closeUploadForm = () => {
-  photoEdit.classList.add('hidden');
-  body.classList.remove('modal-open');
+export const closeUploadForm = () => {
+  photoEditOverlayElement.classList.add('hidden');
+  bodyElement.classList.remove('modal-open');
   document.removeEventListener('keydown', onFormEscKeydown);
-  photoUploadForm.reset();
+  photoUploadFormElement.reset();
 };
 
 function onFormEscKeydown (evt) {
@@ -31,17 +40,17 @@ function onFormEscKeydown (evt) {
 }
 
 const openUploadForm = () => {
-  photoEdit.classList.remove('hidden');
-  body.classList.add('modal-open');
+  photoEditOverlayElement.classList.remove('hidden');
+  bodyElement.classList.add('modal-open');
   document.addEventListener('keydown', onFormEscKeydown);
   getStartZoomValue();
   addClickZoomButton();
   resetPhotoEffects();
 };
 
-uploadFile.addEventListener('change', openUploadForm);
+uploadFileInputElement.addEventListener('change', openUploadForm);
 
-closeFormButton.addEventListener('click', closeUploadForm);
+closeFormButtonElement.addEventListener('click', closeUploadForm);
 
 const onNotEscKeydown = (evt) => {
   if (isEscapeKey(evt)) {
@@ -49,10 +58,10 @@ const onNotEscKeydown = (evt) => {
   }
 };
 
-textHashtags.addEventListener('keydown', onNotEscKeydown);
-textComment.addEventListener('keydown', onNotEscKeydown);
+textHashtagsElement.addEventListener('keydown', onNotEscKeydown);
+textCommentElement.addEventListener('keydown', onNotEscKeydown);
 
-const pristine = new Pristine (photoUploadForm, {
+const pristine = new Pristine (photoUploadFormElement, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
 });
@@ -63,34 +72,34 @@ const hashtagCheckCorrect = (value) => {
   return value === ''|| hashtags.every((hashtag) => re.test(hashtag));
 };
 
-pristine.addValidator(textHashtags, hashtagCheckCorrect, CORRECT_HASHTAG_MESSAGE);
+pristine.addValidator(textHashtagsElement, hashtagCheckCorrect, CORRECT_HASHTAG_MESSAGE);
 
 const hashtagCheckAmount = (value) => {
   const hashtags = value.trim().toLowerCase().split(' ');
   return hashtags.length <= MAX_HASHTAGS_AMOUNT;
 };
 
-pristine.addValidator(textHashtags, hashtagCheckAmount, AMOUNT_HASHTAG_MESSAGE);
+pristine.addValidator(textHashtagsElement, hashtagCheckAmount, AMOUNT_HASHTAG_MESSAGE);
 
 const hashtagCheckOriginal = (value) => {
   const hashtags = value.trim().toLowerCase().split(' ');
   return new Set(hashtags).size === hashtags.length;
 };
 
-pristine.addValidator(textHashtags, hashtagCheckOriginal, ORIGINAL_HASHTAG_MESSAGE);
+pristine.addValidator(textHashtagsElement, hashtagCheckOriginal, ORIGINAL_HASHTAG_MESSAGE);
 
 const submitButtonBlock = () => {
-  submitButton.disabled = true;
-  submitButton.textContent = 'Публикую...';
+  submitButtonElement.disabled = true;
+  submitButtonElement.textContent = 'Публикую...';
 };
 
 const submitButtonUnblock = () => {
-  submitButton.disabled = false;
-  submitButton.textContent = 'Опубликовать';
+  submitButtonElement.disabled = false;
+  submitButtonElement.textContent = 'Опубликовать';
 };
 
-const photoUploadFormSubmit = (onSuccess, onFail) => {
-  photoUploadForm.addEventListener('submit', (evt) => {
+export const photoUploadFormSubmit = (onSuccess, onFail) => {
+  photoUploadFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
 
@@ -111,32 +120,22 @@ const photoUploadFormSubmit = (onSuccess, onFail) => {
   });
 };
 
-export {photoUploadFormSubmit, closeUploadForm};
-
-
-const errorMessageTamplate = document.querySelector('#error').content.querySelector('.error');
-const errorMessageElement = errorMessageTamplate.cloneNode(true);
-const errorButton = errorMessageElement.querySelector('.error__button');
-const successMessageTamplate = document.querySelector('#success').content.querySelector('.success');
-const successMessageElement = successMessageTamplate.cloneNode(true);
-const successButton = successMessageElement.querySelector('.success__button');
-
 const errorMessageShow = () => {
-  body.classList.add('modal-open');
-  body.append(errorMessageElement);
+  bodyElement.classList.add('modal-open');
+  bodyElement.append(errorMessageElement);
   errorMessageElement.style.zIndex = '100';
   document.addEventListener('keydown', onErrorMessageEscClose);
   document.addEventListener('click', onErrorMessageAnyClickClose);
 };
 
 const errorMessageClose = () => {
-  body.classList.remove('modal-open');
+  bodyElement.classList.remove('modal-open');
   errorMessageElement.remove();
   document.removeEventListener('keydown', onErrorMessageEscClose);
   document.removeEventListener('click', onErrorMessageAnyClickClose);
 };
 
-errorButton.addEventListener('click', () => errorMessageClose());
+errorButtonElement.addEventListener('click', () => errorMessageClose());
 
 function onErrorMessageEscClose (evt) {
   if (isEscapeKey(evt)) {
@@ -152,20 +151,20 @@ function onErrorMessageAnyClickClose (evt) {
 }
 
 const successMessageShow = () => {
-  body.classList.add('modal-open');
-  body.append(successMessageElement);
+  bodyElement.classList.add('modal-open');
+  bodyElement.append(successMessageElement);
   document.addEventListener('keydown', onSuccessMessageEscClose);
   document.addEventListener('click', onSuccessMessageAnyClickClose);
 };
 
 const successMessageClose = () => {
-  body.classList.remove('modal-open');
+  bodyElement.classList.remove('modal-open');
   successMessageElement.remove();
   document.removeEventListener('keydown', onSuccessMessageEscClose);
   document.removeEventListener('click', onSuccessMessageAnyClickClose);
 };
 
-successButton.addEventListener('click', () => successMessageClose());
+successButtonElement.addEventListener('click', () => successMessageClose());
 
 function onSuccessMessageEscClose (evt) {
   if (isEscapeKey(evt)) {
@@ -180,13 +179,11 @@ function onSuccessMessageAnyClickClose (evt) {
   }
 }
 
-const uploadFormSuccessSubmit = () => {
+export const uploadFormSuccessSubmit = () => {
   closeUploadForm();
   successMessageShow();
 };
 
-const uploadFormErrorSubmit = () => {
+export const uploadFormErrorSubmit = () => {
   errorMessageShow();
 };
-
-export {uploadFormSuccessSubmit, uploadFormErrorSubmit};

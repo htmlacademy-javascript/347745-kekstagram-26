@@ -1,8 +1,7 @@
-// import './form.js';
-import {applyPhotoEffects, createRandomPhoto, getPhotoFilters, loadUserPhoto} from './photos.js';
-import {getData} from './api.js';
-import {showAlert} from './utils.js';
-import {uploadFormSuccessSubmit, uploadFormErrorSubmit, photoUploadFormSubmit} from './form.js';
+import { showAlert } from './utils.js';
+import { getData } from './api.js';
+import { applyPhotoEffects, createRandomPhoto, getPhotoFilters, loadUserPhoto } from './photos.js';
+import { uploadFormSuccessSubmit, uploadFormErrorSubmit, photoUploadFormSubmit } from './form.js';
 
 applyPhotoEffects();
 

@@ -1,8 +1,8 @@
 const ERROR_TIME = 5000;
 
-const isEscapeKey = (evt) => evt.key === 'Escape';
+export const isEscapeKey = (evt) => evt.key === 'Escape';
 
-const showAlert = () => {
+export const showAlert = () => {
   const error = document.createElement('div');
   error.style.zIndex = '100';
   error.style.position = 'absolute';
@@ -15,7 +15,7 @@ const showAlert = () => {
   error.style.color = 'red';
   error.style.backgroundColor = 'black';
 
-  error.textContent = 'Не получилось загрузить информацию';
+  error.textContent = 'Fail to load data. Please, try again';
 
   document.body.append(error);
 
@@ -24,7 +24,7 @@ const showAlert = () => {
   }, ERROR_TIME);
 };
 
-const debounce = (callback, timeoutDelay) => {
+export const debounce = (callback, timeoutDelay) => {
   let timeoutId;
 
   return (...rest) => {
@@ -32,5 +32,3 @@ const debounce = (callback, timeoutDelay) => {
     timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
   };
 };
-
-export {isEscapeKey, showAlert, debounce};

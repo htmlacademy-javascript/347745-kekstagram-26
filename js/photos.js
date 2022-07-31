@@ -1,22 +1,52 @@
-import {isEscapeKey} from './utils.js';
+import { debounce, isEscapeKey } from './utils.js';
 
-const body = document.querySelector('body');
-const fullPhoto = document.querySelector('.big-picture');
-const photoImage = fullPhoto.querySelector('.big-picture__img').querySelector('img');
-const likesCount = fullPhoto.querySelector('.likes-count');
-const commentsList = fullPhoto.querySelector('.social__comments');
-const commentItem = commentsList.querySelector('.social__comment');
-const photoDescription = fullPhoto.querySelector('.social__caption');
-const commentCounter = fullPhoto.querySelector('.social__comment-count');
-const commentLoader = fullPhoto.querySelector('.comments-loader');
-const closeButton = fullPhoto.querySelector('.big-picture__cancel');
+const body = document.body;
+
+const fullPhotoElement = document.querySelector('.big-picture');
+const photoImageElement = fullPhotoElement.querySelector('.big-picture__img').querySelector('img');
+const likesCountElement = fullPhotoElement.querySelector('.likes-count');
+const commentsListElement = fullPhotoElement.querySelector('.social__comments');
+const commentItemElement = commentsListElement.querySelector('.social__comment');
+const photoDescriptionElement = fullPhotoElement.querySelector('.social__caption');
+const commentCounterElement = fullPhotoElement.querySelector('.social__comment-count');
+const commentLoaderElement = fullPhotoElement.querySelector('.comments-loader');
+const closeButtonElement = fullPhotoElement.querySelector('.big-picture__cancel');
+
+const effectSliderContainerElement = document.querySelector('.effect-level');
+const effectSliderElement = document.querySelector('.effect-level__slider');
+const effectLevelValueElement = document.querySelector('.effect-level__value');
+const uploadPhotoElement = document.querySelector('.img-upload__preview img');
+const effectsContainerElement = document.querySelector('.effects__list');
+
+const photoFiltersElement = document.querySelector('.img-filters');
+const sortDefaultButtonElement = photoFiltersElement.querySelector('#filter-default');
+const sortRandomButtonElement = photoFiltersElement.querySelector('#filter-random');
+const sortPopulartButtonElement = photoFiltersElement.querySelector('#filter-discussed');
+
+const fileChooserElement = document.querySelector('#upload-file');
+const userPhotoElement = document.querySelector('.img-upload__preview img');
+
+const previewUsersPhotosElement = document.querySelector('.pictures');
+const randomPhotoTempleteElement = document.querySelector('#picture').content.querySelector('.picture');
+
+const scaleSmallerButtonElement = document.querySelector('.scale__control--smaller');
+const scaleBiggerButtonElement = document.querySelector('.scale__control--bigger');
+const scaleValueInputElement = document.querySelector('.scale__control--value');
+const previewPhotoElement = document.querySelector('.img-upload__preview');
 
 const commentListFragment = document.createDocumentFragment();
+const previewUsersPhotosFragment = document.createDocumentFragment();
 
+const TIME_OUT_DELAY = 500;
+const RANDOM_PHOTO_AMOUNT = 10;
 const MAX_COMMENTS_AMOUNT = 5;
+const START_ZOOM_VALUE = 100;
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
+let currentZoomValue = START_ZOOM_VALUE;
 
 const closeFullPhoto = () => {
-  fullPhoto.classList.add('hidden');
+  fullPhotoElement.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onFullPhotoEscKeydown);
 };
@@ -28,22 +58,22 @@ function onFullPhotoEscKeydown (evt) {
   }
 }
 
-closeButton.addEventListener ('click', closeFullPhoto);
+closeButtonElement.addEventListener ('click', closeFullPhoto);
 
 const createRandomFullPhoto = ({url, likes, description, comments}) => {
-  fullPhoto.classList.remove('hidden');
+  fullPhotoElement.classList.remove('hidden');
   body.classList.add('modal-open');
 
-  photoImage.src = url;
-  likesCount.textContent = likes;
-  photoDescription.textContent = description;
+  photoImageElement.src = url;
+  likesCountElement.textContent = likes;
+  photoDescriptionElement.textContent = description;
 
   let commentCount = 0;
 
   const commentsAdd = () => {
     const commentLenght = commentCount += MAX_COMMENTS_AMOUNT;
     comments.slice(0, commentLenght ).forEach((comment) => {
-      const commentElementCopy = commentItem.cloneNode(true);
+      const commentElementCopy = commentItemElement.cloneNode(true);
       const commentAvatarElement = commentElementCopy.querySelector('.social__comment .social__picture');
       const commentMesssageElement = commentElementCopy.querySelector('.social__comment .social__text');
       commentAvatarElement.src = comment.avatar;
@@ -52,21 +82,21 @@ const createRandomFullPhoto = ({url, likes, description, comments}) => {
       commentListFragment.append(commentElementCopy);
     });
 
-    commentsList.innerHTML = '';
-    commentsList.append(commentListFragment);
+    commentsListElement.innerHTML = '';
+    commentsListElement.append(commentListFragment);
 
     if (commentCount >= comments.length) {
-      commentLoader.classList.add('hidden');
-      commentCounter.textContent = `${comments.length} из ${comments.length} комментариев`;
+      commentLoaderElement.classList.add('hidden');
+      commentCounterElement.textContent = `${comments.length} из ${comments.length} комментариев`;
     } else {
-      commentLoader.classList.remove('hidden');
-      commentCounter.textContent = `${commentCount} из ${comments.length} комментариев`;
+      commentLoaderElement.classList.remove('hidden');
+      commentCounterElement.textContent = `${commentCount} из ${comments.length} комментариев`;
     }
   };
 
   commentsAdd();
 
-  commentLoader.addEventListener ('click', () => {
+  commentLoaderElement.addEventListener ('click', () => {
     commentsAdd();
   });
 
@@ -74,13 +104,6 @@ const createRandomFullPhoto = ({url, likes, description, comments}) => {
 };
 
 export { createRandomFullPhoto };
-
-
-const effectSliderConteiner = document.querySelector('.effect-level');
-const effectSlider = document.querySelector('.effect-level__slider');
-const effectLevelValue = document.querySelector('.effect-level__value');
-const upLoadPhoto = document.querySelector('.img-upload__preview img');
-const effectsContainer = document.querySelector('.effects__list');
 
 const photoEffects = {
   chrome: {
@@ -145,7 +168,7 @@ const photoEffects = {
   },
 };
 
-noUiSlider.create(effectSlider, {
+noUiSlider.create(effectSliderElement, {
   range: {
     min: 0,
     max: 1,
@@ -155,12 +178,12 @@ noUiSlider.create(effectSlider, {
   connect: 'lower',
 });
 
-const resetPhotoEffects = () => {
-  effectLevelValue.value = '';
-  upLoadPhoto.className = '';
-  upLoadPhoto.style.filter = '';
-  effectSliderConteiner.classList.add('hidden');
-  effectSlider.setAttribute('disabled', true);
+export const resetPhotoEffects = () => {
+  effectLevelValueElement.value = '';
+  uploadPhotoElement.className = '';
+  uploadPhotoElement.style.filter = '';
+  effectSliderContainerElement.classList.add('hidden');
+  effectSliderElement.setAttribute('disabled', true);
 };
 
 const getPhotoEffects = (evt) => {
@@ -171,36 +194,29 @@ const getPhotoEffects = (evt) => {
       return;
     }
 
-    effectSliderConteiner.classList.remove('hidden');
-    effectSlider.removeAttribute('disabled', true);
-    upLoadPhoto.classList.add(`effects__preview--${currentValue}`);
+    effectSliderContainerElement.classList.remove('hidden');
+    effectSliderElement.removeAttribute('disabled', true);
+    uploadPhotoElement.classList.add(`effects__preview--${currentValue}`);
 
-    effectSlider.noUiSlider.updateOptions(photoEffects[currentValue].options);
+    effectSliderElement.noUiSlider.updateOptions(photoEffects[currentValue].options);
 
-    effectSlider.noUiSlider.on('update',  () => {
-      effectLevelValue.value = effectSlider.noUiSlider.get();
+    effectSliderElement.noUiSlider.on('update',  () => {
+      effectLevelValueElement.value = effectSliderElement.noUiSlider.get();
 
       const {filter, unit} = photoEffects[currentValue];
-      upLoadPhoto.style.filter = `${filter}(${effectLevelValue.value}${unit})`;
+      uploadPhotoElement.style.filter = `${filter}(${effectLevelValueElement.value}${unit})`;
     });
   }
 };
 
-const applyPhotoEffects = () => {
-  effectsContainer.addEventListener('change', getPhotoEffects);
+export const applyPhotoEffects = () => {
+  effectsContainerElement.addEventListener('change', getPhotoEffects);
 };
 
-export { resetPhotoEffects, applyPhotoEffects };
-
-
-const previewUsersPhotos = document.querySelector('.pictures');
-const randomPhotoTemplete = document.querySelector('#picture').content.querySelector('.picture');
-const previewUsersPhotosFragment = document.createDocumentFragment();
-
-const createRandomPhoto = (photos) => {
+export const createRandomPhoto = (photos) => {
   photos.forEach((photo) => {
     const {url, likes, comments} = photo;
-    const previewPhotoElement = randomPhotoTemplete.cloneNode(true);
+    const previewPhotoElement = randomPhotoTempleteElement.cloneNode(true);
     previewPhotoElement.querySelector('img').src = url;
     previewPhotoElement.querySelector('.picture__likes').textContent = likes;
     previewPhotoElement.querySelector('.picture__comments').textContent = comments.length;
@@ -208,30 +224,17 @@ const createRandomPhoto = (photos) => {
     previewUsersPhotosFragment.append(previewPhotoElement);
   });
 
-  previewUsersPhotos.append(previewUsersPhotosFragment);
+  previewUsersPhotosElement.append(previewUsersPhotosFragment);
 };
 
-export { createRandomPhoto };
-
-
-import {debounce} from './utils.js';
-
-const TIME_OUT_DELAY = 500;
-const RANDOM_PHOTO_AMOUNT = 10;
-const photoFilters = document.querySelector('.img-filters');
-const sortDefaultButton = photoFilters.querySelector('#filter-default');
-const sortRandomButton = photoFilters.querySelector('#filter-random');
-const sortPopulartButton = photoFilters.querySelector('#filter-discussed');
-
 const changeClassButtons = (activeButton) => {
-  photoFilters.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
+  photoFiltersElement.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
   activeButton.classList.add('img-filters__button--active');
 };
 
 const defaultSorting = (photos) => photos.slice();
 
 const randomSorting = (photos) => photos.slice().sort(() => 0.5 - Math.random()).slice(0, RANDOM_PHOTO_AMOUNT);
-
 
 const popularSorting = (photos) => photos.slice().sort((photoA, photoB) => photoB.comments.length - photoA.comments.length);
 
@@ -247,81 +250,60 @@ const loadUsersPhotos = (photos) => {
 
 const getFilterDebounce  = debounce(loadUsersPhotos, TIME_OUT_DELAY);
 
-const getPhotoFilters = (photos) => {
-  photoFilters.classList.remove('img-filters--inactive');
+export const getPhotoFilters = (photos) => {
+  photoFiltersElement.classList.remove('img-filters--inactive');
 
-  sortDefaultButton.addEventListener('click', (evt) => {
+  sortDefaultButtonElement.addEventListener('click', (evt) => {
     changeClassButtons(evt.target);
     getFilterDebounce(defaultSorting(photos));
   });
 
-  sortRandomButton.addEventListener('click', (evt) => {
+  sortRandomButtonElement.addEventListener('click', (evt) => {
     changeClassButtons(evt.target);
     getFilterDebounce(randomSorting(photos));
   });
 
-  sortPopulartButton.addEventListener('click', (evt) => {
+  sortPopulartButtonElement.addEventListener('click', (evt) => {
     changeClassButtons(evt.target);
     getFilterDebounce(popularSorting(photos));
   });
 };
 
-export {getPhotoFilters};
-
-const scaleSmallerButton = document.querySelector('.scale__control--smaller');
-const scaleBiggerButton = document.querySelector('.scale__control--bigger');
-const scaleValueInput = document.querySelector('.scale__control--value');
-const previewPhoto = document.querySelector('.img-upload__preview');
-
-const START_ZOOM_VALUE = 100;
-
-let currentZoomValue = START_ZOOM_VALUE;
-
-const getStartZoomValue = () => {
-  previewPhoto.style.transform = '';
-  scaleValueInput.value = `${START_ZOOM_VALUE}%`;
+export const getStartZoomValue = () => {
+  previewPhotoElement.style.transform = '';
+  scaleValueInputElement.value = `${START_ZOOM_VALUE}%`;
 };
 
 const getZoomOutClick = () => {
   if (currentZoomValue > 25) {
     currentZoomValue -= 25;
-    scaleValueInput.value = `${currentZoomValue}%`;
-    previewPhoto.style.transform = `scale(${currentZoomValue / 100})`;
+    scaleValueInputElement.value = `${currentZoomValue}%`;
+    previewPhotoElement.style.transform = `scale(${currentZoomValue / 100})`;
   }
 };
 
 const getZoomInClick = () => {
   if (currentZoomValue < 100) {
     currentZoomValue += 25;
-    scaleValueInput.value = `${currentZoomValue}%`;
-    previewPhoto.style.transform = `scale(${currentZoomValue / 100})`;
+    scaleValueInputElement.value = `${currentZoomValue}%`;
+    previewPhotoElement.style.transform = `scale(${currentZoomValue / 100})`;
   }
 };
 
-const addClickZoomButton = () => {
-  scaleSmallerButton.addEventListener('click', getZoomOutClick);
-  scaleBiggerButton.addEventListener('click', getZoomInClick);
+export const addClickZoomButton = () => {
+  scaleSmallerButtonElement.addEventListener('click', getZoomOutClick);
+  scaleBiggerButtonElement.addEventListener('click', getZoomInClick);
 };
 
-export { getStartZoomValue, addClickZoomButton };
-
-
-const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-
-const fileChooser = document.querySelector('#upload-file');
-const userPhoto = document.querySelector('.img-upload__preview img');
-
-const loadUserPhoto = () => {
-  fileChooser.addEventListener('change', () => {
-    const file = fileChooser.files[0];
+export const loadUserPhoto = () => {
+  fileChooserElement.addEventListener('change', () => {
+    const file = fileChooserElement.files[0];
     const userPhotoName =  file.name.toLowerCase();
 
     const matches = FILE_TYPES.some((it) => userPhotoName.endsWith(it));
 
     if (matches) {
-      userPhoto.src = URL.createObjectURL(file);
+      userPhotoElement.src = URL.createObjectURL(file);
     }
   });
 };
-
-export {loadUserPhoto};

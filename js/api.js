@@ -1,24 +1,13 @@
-const getData = async (onSuccess, onFail) => {
+const UPLOAD_ENDPOINT = 'https://26.javascript.pages.academy/kekstagram';
+const DOWNLOAD_ENDPOINT = 'https://26.javascript.pages.academy/kekstagram/data';
+
+const ERROR_UPLOAD_MESSAGE = 'Failed to send data. Please, try again';
+const ERROR_DOWNLOAD_MESSAGE = 'Failed to receive data. Please, try again';
+
+export const sendData = async (onSuccess, onFail, body) => {
   try {
     const response = await fetch(
-      'https://26.javascript.pages.academy/kekstagram/data'
-    );
-
-    if (!response.ok) {
-      throw new Error ('Не получилось загрузить информацию');
-    }
-
-    const photosData = await response.json();
-    onSuccess(photosData);
-  } catch (error) {
-    onFail('Не получилось загрузить информацию');
-  }
-};
-
-const sendData = async (onSuccess, onFail, body) => {
-  try {
-    const response = await fetch(
-      'https://26.javascript.pages.academy/kekstagram',
+      UPLOAD_ENDPOINT,
       {
         method: 'POST',
         body,
@@ -26,13 +15,28 @@ const sendData = async (onSuccess, onFail, body) => {
     );
 
     if (!response.ok) {
-      throw new Error ('Не получилось отвправить форму. Попробуйте еще раз');
+      throw new Error (ERROR_UPLOAD_MESSAGE);
     }
 
     onSuccess();
   } catch (error) {
-    onFail('Не получилось отвправить форму. Попробуйте еще раз');
+    onFail(ERROR_UPLOAD_MESSAGE);
   }
 };
 
-export {getData, sendData};
+export const getData = async (onSuccess, onFail) => {
+  try {
+    const response = await fetch(
+      DOWNLOAD_ENDPOINT
+    );
+
+    if (!response.ok) {
+      throw new Error (ERROR_DOWNLOAD_MESSAGE);
+    }
+
+    const photosData = await response.json();
+    onSuccess(photosData);
+  } catch (error) {
+    onFail(ERROR_DOWNLOAD_MESSAGE);
+  }
+};
