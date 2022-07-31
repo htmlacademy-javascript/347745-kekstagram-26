@@ -1,34 +1,34 @@
+const ERROR_TIME = 5000;
 
+export const isEscapeKey = (evt) => evt.key === 'Escape';
 
-// Генератор случайных чисел
-function getRandomPositiveInteger(a, b) {
-  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
-  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
-  const result = Math.random() * (upper - lower + 1) + lower;
+export const showAlert = () => {
+  const error = document.createElement('div');
+  error.style.zIndex = '100';
+  error.style.position = 'absolute';
+  error.style.left = '0';
+  error.style.top = '0';
+  error.style.right = '0';
+  error.style.padding = '10px 3px';
+  error.style.fontSize = '24px';
+  error.style.textAlign = 'center';
+  error.style.color = 'red';
+  error.style.backgroundColor = 'black';
 
-  return Math.floor(result);
-}
+  error.textContent = 'Fail to load data. Please, try again';
 
-// создание массива из случайных чисел
+  document.body.append(error);
 
-// не повторяющиеся значения
+  setTimeout(() => {
+    error.remove();
+  }, ERROR_TIME);
+};
 
-function getNoRepeatRandomNumbers() {
-  const res = [];
+export const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
 
-  for (let i = 0; i < 25; i) {
-    const random = getRandomPositiveInteger(1, 25);
-    if (!res.includes(random)) {
-      res.push(random);
-      i++;
-    }
-  }
-  return res;
-}
-
-// Проверка длинны строки
-function checkStringLength(string, length) {
-  return string.length <= length;
-}
-
-export {getRandomPositiveInteger, getNoRepeatRandomNumbers, checkStringLength};
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
