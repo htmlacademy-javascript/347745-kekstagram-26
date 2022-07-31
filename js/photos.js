@@ -216,12 +216,12 @@ export const applyPhotoEffects = () => {
 export const createRandomPhoto = (photos) => {
   photos.forEach((photo) => {
     const {url, likes, comments} = photo;
-    const previewPhotoElement = randomPhotoTempleteElement.cloneNode(true);
-    previewPhotoElement.querySelector('img').src = url;
-    previewPhotoElement.querySelector('.picture__likes').textContent = likes;
-    previewPhotoElement.querySelector('.picture__comments').textContent = comments.length;
-    previewPhotoElement.addEventListener('click', () => createRandomFullPhoto(photo));
-    previewUsersPhotosFragment.append(previewPhotoElement);
+    const previewPhoto = randomPhotoTempleteElement.cloneNode(true);
+    previewPhoto.querySelector('img').src = url;
+    previewPhoto.querySelector('.picture__likes').textContent = likes;
+    previewPhoto.querySelector('.picture__comments').textContent = comments.length;
+    previewPhoto.addEventListener('click', () => createRandomFullPhoto(photo));
+    previewUsersPhotosFragment.append(previewPhoto);
   });
 
   previewUsersPhotosElement.append(previewUsersPhotosFragment);
